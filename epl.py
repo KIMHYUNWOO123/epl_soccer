@@ -1,11 +1,13 @@
-from matplotlib.pyplot import connect
-from soccer_player import Soccer_player
-import sqlite3
+# 메인함수
+import menu
 
+def play_game():
+    pass
 
 def main():
-    son = Soccer_player("son","Korea", "Tottenham", "31", "183", "FW", "30000")
-    son.save_db()
+    value = menu.print_menu()
+    menu.select_menu(value)
+    
     
 
 main()
