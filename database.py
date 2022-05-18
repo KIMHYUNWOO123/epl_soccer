@@ -98,7 +98,7 @@ def play_game():
         print("리그 종료")
         team = winner()
         print(f"우승팀은 ***{team}*** ")
-        rank_show()
+        mvp_player()
         end_of_season()
         return 0
 def winner():
@@ -112,6 +112,8 @@ def winner():
 def end_of_season():
     for i in range(1,7):
         text = f"UPDATE EPL SET game = 0, point = 0, win = 0, draw = 0, defeat = 0 ,GA = 0, GF = 0, GD = 0 WHERE num = {i}"
+        execute_nofetch(text)
+        text = "UPDATE player SET goal = 0"
         execute_nofetch(text)
 
 def win(num):
@@ -200,30 +202,38 @@ def goal_player(team, goal):
     for record in fetched_table:
         player[i] = record[0]
         stat[i] = record[2]
-        total += record[2]
         if record[1] == "FW":
-            stat[i] = int(stat[i]/10)
-            stat[i] += 10
+            stat[i] += 30
         if record[1] == "MF":
-            stat[i] = int(stat[i]/10)
-            stat[i] += 5
+            stat[i] += 15
         if record[1] == "DF":
-            stat[i] = int(stat[i]/10)
-            stat[i] += 1
+            stat[i] += 5
         if record[1] == "GK":
             stat[i] = 0
+        total += stat[i]
         i += 1
-    for k in range(goal):
+        
+    for i in range(goal):
         random_stat = random.randint(0, total)
-        if (0 <=random_stat < stat[0]):
+        if (0 <= random_stat < stat[0]):
             text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[0]}' "
             execute_fetch(text)
-        if (stat[0] <=random_stat < stat[1]):
+        if (stat[0] <= random_stat < stat[0]+stat[1]):
             text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[1]}' "
             execute_fetch(text)
-        if (stat[1] <=random_stat < stat[2]):
+        if (stat[0]+stat[1] <= random_stat < stat[0]+stat[1]+stat[2]):
             text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[2]}' "
             execute_fetch(text)
-        if (stat[2] <=random_stat < stat[3]):
+        if (stat[0]+stat[1]+stat[2] <= random_stat < total):
             text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[3]}' "
             execute_fetch(text)
+
+def mvp_player():
+    text = "SELECT name FROM player ORDER BY goal DESC"
+    fetched_table = execute_fetch(text)
+    
+    text = "SELECT goal FROM player ORDER BY goal DESC"
+    goal = execute_fetch(text)
+     
+    print(f"이번시즌 MVP {fetched_table[0][0]} 득점:{goal[0][0]}")
+    
