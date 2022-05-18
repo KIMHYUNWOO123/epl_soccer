@@ -177,11 +177,10 @@ def goal_against(team, ga):
 def goal_diffefence(team):
     text1 = f"SELECT GF,GA FROM EPL WHERE team = '{team}' "
     fetched_table = execute_fetch(text1)
-    for record in fetched_table:
-        gf = record[0]
-        ga = record[1]
+    gf = fetched_table[0][0]
+    ga = fetched_table[0][1]
     gd = gf - ga
-    text = f"UPDATE EPL SET GD = GD + {gd} WHERE team = '{team}' "
+    text = f"UPDATE EPL SET GD = {gd} WHERE team = '{team}' "
     execute_nofetch(text)
 
 def win_career():
