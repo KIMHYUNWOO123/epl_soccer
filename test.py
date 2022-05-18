@@ -1,24 +1,35 @@
-# import sqlite3
-import random
+import sqlite3
+from turtle import position
 
-from database import end_of_season
+con = sqlite3.connect("soccer.db")
+cursor = con.cursor()
+cursor.execute("""SELECT name, position, stat FROM player WHERE team = 'Tottenham' """)
+table = cursor.fetchall()
+player = ["", "", "", "", "", ""]
+stat = [0,]
+
+i = 0
+for record in table:
+    player[i] = record[0]
+    stat[i] = record[2]
+    if record[1] == "FW":
+        stat[i] = int(stat[i]/10)
+        stat[i] += 5
+    if record[1] == "MF":
+        stat[i] = int(stat[i]/10)
+        stat[i] += 3
+    if record[i] == "DF":
+        stat[i] = int(stat[i]/10)
+        stat[i] += 1
+    if record[i] == "GK":
+        stat[i] = 0
+    
+for chance in goal:
+    
+        
+    i += 1
+con.commit()
+cursor.close()
+con.close()
 
 
-# con = sqlite3.connect("soccer.db")
-# cursor = con.cursor()
-# # cursor.execute(f"""INSERT INTO player
-# #                 VALUES("Kepa" ,"Chelsea" , "GK" , 22000, 91)""")
-# # cursor.execute(f"""INSERT INTO player
-# #                 VALUES("Lukaku","Chelsea", "FW", 25000, 96)""")
-# # cursor.execute(f"""INSERT INTO player
-# #                 VALUES("Silva" , "Chelsea" ,"DF" , 24000, 93)""")
-# # cursor.execute(f"""INSERT INTO player
-# #                 VALUES("Kante" , "Chelsea" , "MF", 28000, 98)""")
-# # cursor.execute(f"""INSERT INTO player
-# #                 VALUES("Jorginho" , "Chelsea" , "MF" ,23000, 92 )""")
-# cursor.execute("""UPDATE EPL SET num = 6 WHERE team = 'Chelsea' """)
-# con.commit()
-# cursor.close()
-# con.close()
-
-end_of_season()

@@ -1,5 +1,2 @@
-
-def main():
-    value = menu.print_menu()
-    menu.select_menu(value)
-    
+player[i] = record[0]
+    i += 1

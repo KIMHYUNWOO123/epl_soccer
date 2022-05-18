@@ -23,7 +23,7 @@ def print_menu():
         print()
         print()
         print("*"*25)
-        print("경기시작 순위보기")
+        print("경기시작 순위보기 역대우승")
         print("*"*25)
         value = input(">>>")
     return value
@@ -48,26 +48,25 @@ def select_menu(value):
     if value == "선수조회":
         print("조회 할 선수의 이름을 적어주세요")
         value = input(">>>")
-        value = value.capitalize()
         database.player_show(value)
 
     if value == "소속선수":
         print("조회 할 팀 명을 적어주세요")
         value = input(">>>")
-        value = value.capitalize()
         database.team_show(value)
     
     if value == "팀스탯":
         print("조회 할 팀 명을 적어주세요")
         value = input(">>>")
-        value = value.capitalize()
         database.team_avg_stat(value)
 
     if value == "구단운영비":
         print("조회 할 팀 명을 적어주세요")
         value = input(">>>")
-        value = value.capitalize()
         database.team_sum_income(value)
     if value == "경기시작":
         database.play_game()
+
+    if value =="역대우승":
+        database.win_career()
 

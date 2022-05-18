@@ -63,42 +63,55 @@ def play_game():
     fetched_table = execute_fetch(text)
     for record in fetched_table:
         game_num = record[0]
-    if game_num == 10:
+    if game_num <= 9:
+        print(f"{game_num+1}번째 경기 결과")
+        for i in range(0,6,2):
+            stat1 = num_trans_stat(game[game_num][i])
+            stat2 = num_trans_stat(game[game_num][i+1])
+            team1 = num_trans_team(game[game_num][i])
+            team2 = num_trans_team(game[game_num][i+1])
+            goal1 = rand_goal(stat1)
+            goal2 = rand_goal(stat2)
+            if goal1 > goal2:
+                win(game[game_num][i])
+                defeat(game[game_num][i+1]) 
+                print(f"{team1} {goal1} vs {goal2} {team2}  ({team1} Win) ") 
+            if goal1 == goal2:
+                draw(game[game_num][i])
+                draw(game[game_num][i+1])
+                print(f"{team1} {goal1} vs {goal2} {team2}  (Draw) ") 
+            if goal1 < goal2:
+                defeat(game[game_num][i])
+                win(game[game_num][i+1])
+                print(f"{team1} {goal1} vs {goal2} {team2}  ({team2} win) ") 
+            
+            goal_for(team1, goal1)
+            goal_for(team2, goal2)
+            goal_against(team1, goal2)
+            goal_against(team2, goal1)
+            goal_diffefence(team1)
+            goal_diffefence(team2)
+            goal_player(team1,goal1)
+            goal_player(team2,goal2)
+
+    if game_num == 9:
         print("리그 종료")
         team = winner()
         print(f"우승팀은 ***{team}*** ")
         rank_show()
         end_of_season()
         return 0
-    print(f"{game_num+1}번째 경기 결과")
-    for i in range(0,6,2):
-        stat1 = num_trans_stat(game[game_num][i])
-        stat2 = num_trans_stat(game[game_num][i+1])
-        team1 = num_trans_team(game[game_num][i])
-        team2 = num_trans_team(game[game_num][i+1])
-        goal1 = rand_goal(stat1)
-        goal2 = rand_goal(stat2)
-        if goal1 > goal2:
-            win(game[game_num][i])
-            defeat(game[game_num][i+1]) 
-            print(f"{team1} {goal1} vs {goal2} {team2}  ({team1} Win) ") 
-        if goal1 == goal2:
-            draw(game[game_num][i])
-            draw(game[game_num][i+1])
-            print(f"{team1} {goal1} vs {goal2} {team2}  (Draw) ") 
-        if goal1 < goal2:
-            defeat(game[game_num][i])
-            win(game[game_num][i+1])
-            print(f"{team1} {goal1} vs {goal2} {team2}  ({team2} win) ") 
-
 def winner():
-    text = "SELECT * FROM EPL ORDER BY point DESC"
+    text = "SELECT * FROM EPL ORDER BY point DESC, GF DESC"
     fetched_table = execute_fetch(text)
     for record in fetched_table:
+        text1 = f"UPDATE EPL SET career = career + 1 WHERE team = '{record[0]}' "
+        execute_nofetch(text1)
         return record[0]
+        
 def end_of_season():
     for i in range(1,7):
-        text = f"UPDATE EPL SET game = 0, point = 0, win = 0, draw = 0, defeat = 0 WHERE num = {i}"
+        text = f"UPDATE EPL SET game = 0, point = 0, win = 0, draw = 0, defeat = 0 ,GA = 0, GF = 0, GD = 0 WHERE num = {i}"
         execute_nofetch(text)
 
 def win(num):
@@ -151,3 +164,66 @@ def team_sum_income(value):
     for record in fetched_table:
         print (f"구단운영비:{record[0]}만원")
 
+def goal_for(team, gf):
+    text = f"UPDATE EPL SET GF = GF + {gf} WHERE team = '{team}' "
+    execute_nofetch(text)
+
+def goal_against(team, ga):
+    text = f"UPDATE EPL SET GA = GA + {ga} WHERE team = '{team}' "
+    execute_nofetch(text)
+
+def goal_diffefence(team):
+    text1 = f"SELECT GF,GA FROM EPL WHERE team = '{team}' "
+    fetched_table = execute_fetch(text1)
+    for record in fetched_table:
+        gf = record[0]
+        ga = record[1]
+    gd = gf - ga
+    text = f"UPDATE EPL SET GD = GD + {gd} WHERE team = '{team}' "
+    execute_nofetch(text)
+
+def win_career():
+    text = f"SELECT * FROM EPL ORDER BY career DESC"
+    fetched_table = execute_fetch(text)
+    print("역대 우승 횟수")
+    print("-----------------------")
+    for record in fetched_table:
+        print(f"{record[0]} 우승횟수 - {record[10]}번 ")
+
+def goal_player(team, goal):
+    text = f"SELECT name, position ,stat FROM player WHERE team = '{team}' AND position IN ('DF','MF','FW') "
+    fetched_table = execute_fetch(text)
+    player = ["", "", "", "", ""]
+    stat = [0,0,0,0]
+    i = 0
+    total = 0
+    for record in fetched_table:
+        player[i] = record[0]
+        stat[i] = record[2]
+        total += record[2]
+        if record[1] == "FW":
+            stat[i] = int(stat[i]/10)
+            stat[i] += 10
+        if record[1] == "MF":
+            stat[i] = int(stat[i]/10)
+            stat[i] += 5
+        if record[1] == "DF":
+            stat[i] = int(stat[i]/10)
+            stat[i] += 1
+        if record[1] == "GK":
+            stat[i] = 0
+        i += 1
+    for k in range(goal):
+        random_stat = random.randint(0, total)
+        if (0 <=random_stat < stat[0]):
+            text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[0]}' "
+            execute_fetch(text)
+        if (stat[0] <=random_stat < stat[1]):
+            text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[1]}' "
+            execute_fetch(text)
+        if (stat[1] <=random_stat < stat[2]):
+            text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[2]}' "
+            execute_fetch(text)
+        if (stat[2] <=random_stat < stat[3]):
+            text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[3]}' "
+            execute_fetch(text)
