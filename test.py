@@ -1,14 +1,15 @@
-
+import random
 import sqlite3
-
-from database import end_of_season
-
-con = sqlite3.connect("soccer.db")
-cursor = con.cursor()
-# cursor.execute("""SELECT GF,GA FROM EPL WHERE team = 'Tottenham' """)
-# table = cursor.fetchall()
-# print(table[0][0],table[0][1])
-end_of_season()
-con.commit()
-cursor.close()
-con.close()
+#con = sqlite3.connect("soccer.db")
+#cursor = con.cursor()
+#cursor.execute("""SELECT name,stat,team FROM player WHERE team = 'Tottenham' """)
+#table = cursor.fetchall()
+#for i in table:
+#    print(i[1])
+#con.commit()
+#cursor.close()
+#con.close()
+num = random.randint(0,400)
+for i in range(5):
+    num = random.randint(0,400)
+    print(num)

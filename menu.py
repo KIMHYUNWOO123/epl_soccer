@@ -9,7 +9,7 @@ def print_menu():
         print()
         print()
         print("-"*30)
-        print("추가  삭제  선수조회")
+        print("추가  삭제  선수조회 득점순위")
         print("-"*30)
         value = input(">>>")
     if select == "팀관리":
@@ -67,6 +67,9 @@ def select_menu(value):
     if value == "경기시작":
         database.play_game()
 
-    if value =="역대우승":
+    if value == "역대우승":
         database.win_career()
+
+    if value == "득점순위":
+        database.goal_rank()
 

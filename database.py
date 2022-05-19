@@ -2,9 +2,9 @@
 import sqlite3
 import numpy as np
 import random
-from pyparsing import restOfLine
 
-from regex import D
+from sqlalchemy import FetchedValue
+
 game = np.zeros((10,6))
 game = [[1, 2, 3, 4, 5, 6], [2, 6, 1, 3, 4, 5], [3, 6, 2, 5, 1, 4], [1, 6, 2, 4, 3, 5], [2, 3, 1, 5, 4, 6], 
         [6, 5, 4, 3, 2, 1], [5, 4, 6, 2, 3, 1], [5, 2, 4, 1, 6, 3], [5, 3, 4, 2, 6, 1], [5, 1, 6, 4, 3, 2]]
@@ -211,20 +211,23 @@ def goal_player(team, goal):
             stat[i] = 0
         total += stat[i]
         i += 1
-        
     for i in range(goal):
         random_stat = random.randint(0, total)
         if (0 <= random_stat < stat[0]):
             text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[0]}' "
+            print(f"득점: **{player[0]}**")
             execute_fetch(text)
         if (stat[0] <= random_stat < stat[0]+stat[1]):
             text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[1]}' "
+            print(f"득점: **{player[1]}**")
             execute_fetch(text)
         if (stat[0]+stat[1] <= random_stat < stat[0]+stat[1]+stat[2]):
             text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[2]}' "
+            print(f"득점: **{player[2]}**")
             execute_fetch(text)
         if (stat[0]+stat[1]+stat[2] <= random_stat < total):
             text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[3]}' "
+            print(f"득점: **{player[3]}**")
             execute_fetch(text)
 
 def mvp_player():
@@ -235,4 +238,12 @@ def mvp_player():
     goal = execute_fetch(text)
      
     print(f"이번시즌 MVP {fetched_table[0][0]} 득점:{goal[0][0]}")
+
+def goal_rank():
+    text = "SELECT team, name, goal FROM player ORDER BY goal DESC"
+    fetched_table = execute_fetch(text)
+    i = 1
+    for record in fetched_table:
+        print(f"{i}등 {record[0]} - {record[1]} {record[2]}골")
+        i += 1
     

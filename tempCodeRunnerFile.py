@@ -1,1 +1,2 @@
-end_of_season()
+
+#for i in table:
