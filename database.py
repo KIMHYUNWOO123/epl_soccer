@@ -91,8 +91,10 @@ def play_game():
             goal_against(team2, goal1)
             goal_diffefence(team1)
             goal_diffefence(team2)
-            goal_player(team1,goal1)
-            goal_player(team2,goal2)
+            sqc = ">>>"
+            goal_player(sqc,team1,goal1)
+            sqc = "<<<"
+            goal_player(sqc,team2,goal2)
 
     if game_num == 9:
         print("리그 종료")
@@ -191,7 +193,7 @@ def win_career():
     for record in fetched_table:
         print(f"{record[0]} 우승횟수 - {record[10]}번 ")
 
-def goal_player(team, goal):
+def goal_player(sqc,team, goal):
     text = f"SELECT name, position ,stat FROM player WHERE team = '{team}' AND position IN ('DF','MF','FW') "
     fetched_table = execute_fetch(text)
     player = ["", "", "", "", ""]
@@ -215,19 +217,19 @@ def goal_player(team, goal):
         random_stat = random.randint(0, total)
         if (0 <= random_stat < stat[0]):
             text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[0]}' "
-            print(f"득점: **{player[0]}**")
+            print(f"{sqc}**{player[0]}**")
             execute_fetch(text)
         if (stat[0] <= random_stat < stat[0]+stat[1]):
             text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[1]}' "
-            print(f"득점: **{player[1]}**")
+            print(f"{sqc}**{player[1]}**")
             execute_fetch(text)
         if (stat[0]+stat[1] <= random_stat < stat[0]+stat[1]+stat[2]):
             text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[2]}' "
-            print(f"득점: **{player[2]}**")
+            print(f"{sqc}**{player[2]}**")
             execute_fetch(text)
         if (stat[0]+stat[1]+stat[2] <= random_stat < total):
             text = f"UPDATE player SET goal = goal + 1 WHERE name = '{player[3]}' "
-            print(f"득점: **{player[3]}**")
+            print(f"{sqc}**{player[3]}**")
             execute_fetch(text)
 
 def mvp_player():
