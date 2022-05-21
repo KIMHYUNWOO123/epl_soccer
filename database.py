@@ -66,6 +66,7 @@ def play_game():
     if game_num <= 9:
         print(f"{game_num+1}번째 경기 결과")
         for i in range(0,6,2):
+            print("------------------------")
             stat1 = num_trans_stat(game[game_num][i])
             stat2 = num_trans_stat(game[game_num][i+1])
             team1 = num_trans_team(game[game_num][i])
