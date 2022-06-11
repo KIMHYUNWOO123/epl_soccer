@@ -1,5 +1,5 @@
 #메뉴선택하면 수행해주는 함수
-import database
+import gamedatabase
 def print_menu():
     print("-"*30)
     print("경기관리 팀관리 선수관리")
@@ -34,42 +34,42 @@ def select_menu(value):
     if(value == "추가"):
         print("추가 할 선수의 이름, 팀, 포지션, 연봉, 스택을 입력하세요")
         value = input(">>>")
-        database.add_player(value)
+        gamedatabase.add_player(value)
         
 
     if(value == "삭제"):
         print("삭제 할 선수의 이름을 적어주세요")
         value = input(">>>")
-        database.delete_player(value)
+        gamedatabase.delete_player(value)
 
     if value == "순위보기":
-        database.rank_show()
+        gamedatabase.rank_show()
 
     if value == "선수조회":
         print("조회 할 선수의 이름을 적어주세요")
         value = input(">>>")
-        database.player_show(value)
+        gamedatabase.player_show(value)
 
     if value == "소속선수":
         print("조회 할 팀 명을 적어주세요")
         value = input(">>>")
-        database.team_show(value)
+        gamedatabase.team_show(value)
     
     if value == "팀스탯":
         print("조회 할 팀 명을 적어주세요")
         value = input(">>>")
-        database.team_avg_stat(value)
+        gamedatabase.team_avg_stat(value)
 
     if value == "구단운영비":
         print("조회 할 팀 명을 적어주세요")
         value = input(">>>")
-        database.team_sum_income(value)
+        gamedatabase.team_sum_income(value)
     if value == "경기시작":
-        database.play_game()
+        gamedatabase.play_game()
 
     if value == "역대우승":
-        database.win_career()
+        gamedatabase.win_career()
 
     if value == "득점순위":
-        database.goal_rank()
+        gamedatabase.goal_rank()
 

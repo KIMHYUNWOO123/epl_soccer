@@ -2,8 +2,8 @@
 import sqlite3
 import numpy as np
 import random
-
-from sqlalchemy import FetchedValue
+import paho.mqtt.client as mqtt
+import threading
 
 game = np.zeros((10,6))
 game = [[1, 2, 3, 4, 5, 6], [2, 6, 1, 3, 4, 5], [3, 6, 2, 5, 1, 4], [1, 6, 2, 4, 3, 5], [2, 3, 1, 5, 4, 6], 
