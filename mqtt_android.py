@@ -43,6 +43,17 @@ while(1):
         fetched_table = gamedatabase.execute_fetch(text)
         for record in fetched_table:
             game_num = record[0]
+        if game_num == 10:
+            print("리그 종료")
+            team_ = ""
+            team_ = gamedatabase.winner()
+            text = "SELECT name FROM player ORDER BY goal DESC"
+            fetched_table = gamedatabase.execute_fetch(text)
+            text = "SELECT goal FROM player ORDER BY goal DESC"
+            goal = gamedatabase.execute_fetch(text)
+            team_ = team_ + f",{fetched_table[0][0]},{goal[0][0]}"
+            client.publish("game", "winner," + team_)
+            gamedatabase.end_of_season()
         if game_num <= 9:
             team = f"game,{game_num}"
             for i in range(0,6,2):
@@ -65,9 +76,6 @@ while(1):
                     gamedatabase.defeat(gamedatabase.game[game_num][i])
                     gamedatabase.win(gamedatabase.game[game_num][i+1])
                     team = team + f",{team1} {goal1} vs {goal2} {team2}  ({team2} win)"
-
-
-                
                 gamedatabase.goal_for(team1, goal1)
                 gamedatabase.goal_for(team2, goal2)
                 gamedatabase.goal_against(team1, goal2)
@@ -80,13 +88,6 @@ while(1):
                 gamedatabase.goal_player(sqc,team2,goal2)
             client.publish("game", team)
             print(team)
-        if game_num == 10:
-            print("리그 종료")
-            team_ = gamedatabase.winner()
-            client.publish("game", "winner," + team_)
-            print(team_)
-            gamedatabase.mvp_player()
-            gamedatabase.end_of_season()
         andorid_msg = ""
 
 
