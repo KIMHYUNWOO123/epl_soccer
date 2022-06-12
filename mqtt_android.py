@@ -2,6 +2,7 @@ import sqlite3
 import paho.mqtt.client as mqtt
 import threading
 import gamedatabase
+import time
 
 client = mqtt.Client()
 con = sqlite3.connect("soccer.db")
@@ -20,12 +21,12 @@ def mqtt_():
         
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect("172.30.1.22")
+    client.connect("172.30.1.21")
     client.loop_forever()
 
 t = threading.Thread(target=mqtt_)
 t.start()
-
+game_num = 0
 while(1):
     if(andorid_msg == "rank"):
         text = "SELECT team, point FROM EPL ORDER BY POINT DESC"
@@ -43,19 +44,9 @@ while(1):
         fetched_table = gamedatabase.execute_fetch(text)
         for record in fetched_table:
             game_num = record[0]
-        if game_num == 10:
-            print("리그 종료")
-            team_ = ""
-            team_ = gamedatabase.winner()
-            text = "SELECT name FROM player ORDER BY goal DESC"
-            fetched_table = gamedatabase.execute_fetch(text)
-            text = "SELECT goal FROM player ORDER BY goal DESC"
-            goal = gamedatabase.execute_fetch(text)
-            team_ = team_ + f",{fetched_table[0][0]},{goal[0][0]}"
-            client.publish("game", "winner," + team_)
-            gamedatabase.end_of_season()
+
         if game_num <= 9:
-            team = f"game,{game_num}"
+            team = f"play,{game_num}"
             for i in range(0,6,2):
                 print("------------------------")
                 stat1 = gamedatabase.num_trans_stat(gamedatabase.game[game_num][i])
@@ -88,6 +79,25 @@ while(1):
                 gamedatabase.goal_player(sqc,team2,goal2)
             client.publish("game", team)
             print(team)
+        if game_num == 10:
+            print("리그 종료")
+            team_ = ""
+            team_ = gamedatabase.winner()
+            text = "SELECT name FROM player ORDER BY goal DESC"
+            fetched_table = gamedatabase.execute_fetch(text)
+            text = "SELECT goal FROM player ORDER BY goal DESC"
+            goal = gamedatabase.execute_fetch(text)
+            team_ = team_ + f",{fetched_table[0][0]},{goal[0][0]}"
+            client.publish("game", "winner," + team_)
+            gamedatabase.end_of_season()
         andorid_msg = ""
+    if (andorid_msg == "win"):
+        text = f"SELECT * FROM EPL ORDER BY career DESC"
+        data_win = "history"
+        fetched_table = gamedatabase.execute_fetch(text)
+        for record in fetched_table:
+            data_win = data_win +  f",{record[0]},{record[10]}"
+        client.publish("game", data_win)
+        
 
 
